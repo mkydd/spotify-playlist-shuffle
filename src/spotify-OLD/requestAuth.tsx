@@ -1,11 +1,6 @@
 import { generateRandomString, alphabet } from "oslo/crypto";
 
 async function requestAuth() {
-  if (localStorage.getItem("access_token")) {
-    alert("REMOVE FOR PRODUCTION\nAlready have token!");
-    return localStorage.getItem("access_token");
-  }
-
   const codeVerifier = generateRandomString(64, alphabet("A-Z", "a-z", "0-9"));
   const hashed = await sha256(codeVerifier);
   const codeChallenge = base64encode(hashed);

@@ -1,7 +1,4 @@
-async function getToken() {
-  const urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get("code");
-
+async function getToken(code: string) {
   const authUrl = new URL("https://accounts.spotify.com/api/token");
   const redirectUri = "http://localhost:5173";
   let codeVerifier = localStorage.getItem("code_verifier");
@@ -19,14 +16,19 @@ async function getToken() {
       code_verifier: codeVerifier ?? "",
     }),
   };
+  let res;
+  try {
+    const body = await fetch(authUrl, payload);
+    res = await body.json();
+  } catch (error) {
+    alert(`err: ${error}`);
+    return;
+  }
 
-  const body = await fetch(authUrl, payload);
-  const response = await body.json();
-
-  localStorage.setItem("access_token", response.access_token);
+  localStorage.setItem("access_token", res.access_token);
   updateURL();
 
-  return response.access_token;
+  return res.access_token;
 }
 
 function updateURL() {
